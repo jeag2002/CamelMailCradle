@@ -1,4 +1,4 @@
-Java project created in Eclipse Mars 2 Release (4.5.2) Windows 10
+﻿Java project created in Eclipse Mars 2 Release (4.5.2) Windows 10
 
 Java jdk1.8.0_101 (64 bits)
 Maven 3.3
@@ -13,8 +13,10 @@ PREREQUESITES:
 1)Install Apache ActiveMQ 5.15.2 (when it launch the management console can be accessible by http://127.0.0.1:8161)
 
 2)
-Create a queue named rtmessage (Camel identify it as activemq:queue:rtmessage. Necessary for the STOMP project)
-Create a topic named rtmessage (Camel identify it as activemq:topic:rtmessage. Necessary for the Websocket project)
+Create a queue named rtmessages 
+(Camel identify it as activemq:queue:rtmessages. Necessary for the STOMP project)
+Create a topic named rtmessages 
+(Camel identify it as activemq:topic:rtmessages. Necessary for the Websocket project)
 
 3)Unblock Gmail policy of deny access from third parties apps without 2 level authentication
 https://support.google.com/accounts/answer/6010255?hl=es-419
@@ -32,8 +34,8 @@ Two projects:
 
 activeMQStomp ==> client part. launch two http pages.
 
-http://localhost:8080/index.html ==> Websockets + ActiveMQ (using topic rtmessages)
-http://localhost:8080/indexStomp.html ==> Stomp + ActiveMQ (using queue rtmessage)
+http://localhost:8080/index.html ==> Websockets + ActiveMQ  (using topic rtmessages)
+http://localhost:8080/indexStomp.html ==> Stomp + ActiveMQ  (using queue rtmessages)
 
 activeMQCamel ==> server part. Accept and redirect queries from topìc rtmessages/queue rtmessage 
 and redirect information to a mta (google gmail) by SMTP(s) protocol
