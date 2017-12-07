@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Realtime Mail</title>
+</head>
+<body>
+	<div>
+		<fieldset>
+		<p>
+		<label id="label_1" for="to">Destina:</label><input type="text" id="to"/>
+		</p>
+		<p>
+		<label id="label_2" for="subject">Subject:</label><input type="text" id="subject"/>
+		</p>
+		<p>
+		<label id="label_3" for="message">Message:</label><textarea id="message">Put data</textarea>
+		</p>
+		<p>
+		<button type="button" id="send">Send Mail</button>
+		</p>
+		</fieldset>
+	</div>
+	<div>
+		<h3>Messages:</h3>
+		<ol id="messages"></ol>
+	</div>
+
+	<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var messageList = $("#messages");
+	
+			var getMessageString = function(message) {
+				var date = new Date(message.date);
+				return "<li><p>Received: " + date + "</p><div>" + message.to + ":" + message.subject + ":" + message.content + "</li>";
+			};
+	
+			var socket = new SockJS('/sendmail');
+			var stompClient = Stomp.over(socket);
+	        stompClient.connect({ }, function(frame) {
+	            stompClient.subscribe('/topic/entries', function(data) {
+	                var body = data.body;
+	                var message = JSON.parse(body);
+	                messageList.append(getMessageString(message));
+	            });
+	        });
+	
+	        $("#send").on("click", function() {
+	        	// send the message
+	        	stompClient.send("/app/sendmail", {}, 
+	                	$("#to").val() + ":" + $("#subject").val() + ":" + $("#message").val());
+				$("#to").val("");
+				$("#subject").val("");
+	        	$("#message").val("");
+	        });
+		});
+	</script>
+</body>
+</html>
+

@@ -1,0 +1,49 @@
+//SCRIPT JAVASCRIPT WEBSOCKETS (STOMP BLUF)
+//////////////////////////////////////////////////////////////////////////////////////////////
+$(document).ready(function() {
+			var messageList = $("#messages");
+
+			var getMessageString = function(message) {
+				var date = new Date(message.date);
+				return "<li><p>Received: " + date + "</p><div>" + message.to + ":" + message.subject + ":" + message.content + "</li>";
+			};
+
+			var socket = new SockJS('/sendmail');
+			var stompClient = Stomp.over(socket);
+            stompClient.connect({ }, function(frame) {
+            	// subscribe to the /topic/entries endpoint which feeds newly added messages
+                stompClient.subscribe('/topic/entries', function(data) {
+                	// when a message is received add it to the end of the list
+                    var body = data.body;
+                    var message = JSON.parse(body);
+                    messageList.append(getMessageString(message));
+                });
+            });
+
+            $("#send").on("click", function() {
+            	// send the message
+            	stompClient.send("/app/sendmail", {}, 
+                    	$("#to").val() + ":" + $("#subject").val() + ":" + $("#message").val());
+				$("#to").val("");
+				$("#subject").val("");
+            	$("#message").val("");
+            });
+});
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+https://dzone.com/articles/easy-messaging-stomp-over
+
+<script type="text/javascript">
+ var client = Stomp.client( "ws://localhost:61614/stomp", "v11.stomp" );
+ client.connect( "", "",
+  function() {
+      client.subscribe("jms.topic.test",
+       function( message ) {
+           alert( message );
+          }, 
+    { priority: 9 } 
+      );
+   client.send("jms.topic.test", { priority: 9 }, "Pub/Sub over STOMP!");
+  }
+ );
+//////////////////////////////////////////////////////////////////////////////////////////////		
